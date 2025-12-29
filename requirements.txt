@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+groq
+requests
+pydantic
+playwright
+pymongo
+python-dotenv
+python-multipart
