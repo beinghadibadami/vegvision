@@ -9,8 +9,8 @@ interface AnalysisResult {
 }
 
 // ✅ Render backend base URL from env
-const BASE_URL = "shakbhaji.onrender.com";
-const LOCAL = "http://localhost:8000"
+const BASE_URL = process.env.BASE_URL || "http://localhost:8000";
+// const LOCAL = "http://localhost:8000"
 
 // ✅ Check fallback only in development
 // const isDev = import.meta.env.DEV;
@@ -23,7 +23,7 @@ export async function analyzeImage(file: File): Promise<AnalysisResult> {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await fetch(`${LOCAL}/analyze/upload`, {
+    const response = await fetch(`${BASE_URL}/analyze/upload`, {
       method: 'POST',
       body: formData,
       headers: {
@@ -48,7 +48,7 @@ export async function analyzeImage(file: File): Promise<AnalysisResult> {
 // ------------------------
 export async function analyzeImageUrl(imageUrl: string): Promise<AnalysisResult> {
   try {
-    const response = await fetch(`${LOCAL}/analyze/url`, {
+    const response = await fetch(`${BASE_URL}/analyze/url`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ export async function analyzeImageUrl(imageUrl: string): Promise<AnalysisResult>
 // ------------------------
 export async function getProductPrice(productName: string): Promise<{ price: string; quantity: string }> {
   try {
-    const response = await fetch(`${LOCAL}/price/${encodeURIComponent(productName)}`, {
+    const response = await fetch(`${BASE_URL}/price/${encodeURIComponent(productName)}`, {
       headers: {
         'Accept': 'application/json',
       }
