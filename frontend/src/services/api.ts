@@ -9,7 +9,7 @@ interface AnalysisResult {
 }
 
 // ✅ Render backend base URL from env
-const BASE_URL = process.env.BASE_URL || "http://localhost:8000";
+const BASE_URL = process.env.BASE_URL || "https://shakbhaji.onrender.com";
 // const LOCAL = "http://localhost:8000"
 
 // ✅ Check fallback only in development
