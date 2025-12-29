@@ -5,7 +5,7 @@ load_dotenv()
 
 class Settings:
     PROJECT_NAME: str = "Fruit and Vegetable Analysis API"
-    VERSION: str = "1.0.0"
+    VERSION: str = "3.0.0"
     DESCRIPTION: str = "API to analyze fruits and vegetables for quality, moisture, size, insights, and prices."
     
     MONGODB_URL: str = os.getenv("MONGODB_URL", "")
