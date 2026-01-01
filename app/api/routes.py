@@ -44,7 +44,7 @@ async def health_check():
     return {
         "status": "healthy",
         "mongodb": "connected" if db.get_db() is not None else "disconnected",
-        "groq_api": "configured" if settings.GROQ_API_KEY else "not configured"
+        "groq_api": "configured" if settings.GROQ_API_KEY else "not configured",
         "version": settings.VERSION,
     }
 

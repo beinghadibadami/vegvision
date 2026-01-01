@@ -6,10 +6,35 @@ interface AnalysisResult {
   insight: string;
   price?: string;
   quantity?: string;
+  shelf_life?: {
+    days: string;
+    stage: string;
+    storage_tips: string;
+  };
+  macros?: {
+    calories: number;
+    carbs: number;
+    protein: number;
+    fat: number;
+    fiber: number;
+    vitamins: string[];
+  };
+  recipes?: {
+    name: string;
+    reason: string;
+    time: string;
+    difficulty: string;
+  }[];
+  price_analysis?: {
+    verdict: string;
+    difference: number;
+    average: number;
+  };
+  error?: string;
 }
 
 // ✅ Render backend base URL from env
-const BASE_URL = process.env.BASE_URL || "https://shakbhaji.onrender.com";
+const BASE_URL = "http://localhost:8000";
 // const LOCAL = "http://localhost:8000"
 
 // ✅ Check fallback only in development

@@ -64,18 +64,31 @@ async def scrape_bigbasket(search_query):
             # Update MongoDB
             collection = db.get_collection()
             if collection is not None:
-                scraped_data = {
+                current_time = datetime.utcnow()
+                
+                # Data to set as "current"
+                current_data = {
                     "name": search_query.capitalize(),
                     "quantity": quantity,
                     "price": price,
-                    "scraped_at": datetime.utcnow(),
+                    "scraped_at": current_time,
                     "source_url": url,
                     "actual_product_name": product_name
                 }
+                
+                # Data to push to history
+                history_entry = {
+                    "price": price,
+                    "scraped_at": current_time
+                }
+                
                 try:
                     collection.update_one(
                         {"name": search_query.capitalize()},
-                        {"$set": scraped_data},
+                        {
+                            "$set": current_data,
+                            "$push": {"price_history": history_entry}
+                        },
                         upsert=True
                     )
                 except Exception as db_error:

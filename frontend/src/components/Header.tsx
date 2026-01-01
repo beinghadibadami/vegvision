@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const location = useLocation();
-  
+
   return (
     <header className="w-full py-6 z-10 relative">
       <div className="container px-4 mx-auto">
@@ -16,25 +16,19 @@ const Header: React.FC = () => {
             </div>
             <span className="text-xl font-semibold">VegVision</span>
           </Link>
-          
-          <nav className="hidden md:flex items-center gap-8">
-            <Link 
-              to="/" 
+
+          {/* <nav className="hidden md:flex items-center gap-8">
+            <Link
+              to="/"
               className={`text-sm font-medium transition-colors ${location.pathname === '/' ? 'text-primary' : 'hover:text-primary'}`}
             >
               Home
             </Link>
-            <Link 
-              to="/about" 
-              className={`text-sm font-medium transition-colors ${location.pathname === '/about' ? 'text-primary' : 'hover:text-primary'}`}
-            >
-              About
-            </Link>
-          </nav>
-          
+          </nav> */}
+
           <div className="flex items-center gap-3">
-            <Link 
-              to="/#analyzer" 
+            <Link
+              to="/#analyzer"
               className="hidden md:flex items-center gap-1 text-sm font-medium text-primary hover:underline"
             >
               <span>Try Now</span>

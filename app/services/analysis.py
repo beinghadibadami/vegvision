@@ -16,7 +16,87 @@ async def analyze_image(image_data, force_refresh=False):
     
     try:
         # Create the completion request
-        prompt = "You are a fruit and vegetable expert. Your task is to analyze the provided image and respond with key quality information.\\n\\n### Evaluation Criteria:\\n\\n1. **Name**  \\n   Identify the name of the fruit or vegetable in the image.\\n\\n2. **Insight (Appearance, Texture, Color)**  \\n   Provide a combined natural-language analysis of the appearance, texture, and color. This should describe quality indicators like ripeness, defects, firmness, and color uniformity — **all combined in one paragraph under the field `insight`**.\\n\\n3. **Quality Score (%)**  \\n   Assign a quality score in percentage (0–100%) based on the combined analysis.\\n\\n4. **Moisture Content (%)**  \\n   Estimate the moisture content in percentage (0–100%) based on visual signs (color and texture).\\n\\n5. **Size**  \\n   Categorize the size as `small`, `medium`, or `big`.\\n\\n6. **Price and Quantity**  \\n   If known, include estimated market `price` (in ₹) and `quantity` (like '500 g', '1 kg').\\n\\n---\\n\\n### Output Format:\\n- Always respond with **strict JSON format only**.\\n- Do **not** include appearance, texture, or color as separate fields. They must be described **only inside `insight`**.\\n- If the image does not contain a fruit or vegetable, return:\\n```json\\n{\\n  \"error\": \"The image does not contain a fruit or vegetable.\"\\n}\\n```\\n\\n---\\n\\n### Example Output:\\n```json\\n{\\n  \"name\": \"Tomato\",\\n  \"quality\": 92,\\n  \"moisture\": 85,\\n  \"size\": \"medium\",\\n  \"insight\": \"This tomato is vibrant red, smooth, and plump with no visible blemishes, indicating ripeness and freshness. The color is uniform, and the texture appears firm, suggesting excellent quality.\",\\n  \"price\": \"₹80\",\\n  \"quantity\": \"500 g\"\\n}\\n```\n"
+        prompt = """You are a fruit and vegetable expert. Your task is to analyze the provided image and respond with key quality information, actionable advice, and nutritional data.
+
+### Evaluation Criteria:
+
+1. **Name**
+   Identify the name of the fruit or vegetable.
+
+2. **Insight (Appearance, Texture, Color)**
+   Provide a combined natural-language analysis of the appearance, texture, and color in one paragraph.
+
+3. **Quality Score (%)**
+   Assign a quality score (0–100%).
+
+4. **Moisture Content (%)**
+   Estimate moisture content (0–100%).
+
+5. **Size**
+   Categorize size as `small`, `medium`, or `big`.
+
+6. **Shelf Life & Storage** ("Eat Me When")
+   - `shelf_life_days`: Estimated days remaining before spoilage (e.g., "2-3 days", "Immediate").
+   - `shelf_life_stage`: One of [`Ripening`, `Ripe`, `Peak Fresh`, `Overripe`].
+   - `storage_tips`: Specific advice to extend freshness based on its current state (e.g., "Store in fridge to slow ripening").
+
+7. **Nutritional Macros** (Macro Scanner)
+   Estimate nutritional values for this **specific** identified item and size (per 100g approx, but scaled if size suggests).
+   - `calories` (kcal)
+   - `carbs` (g)
+   - `protein` (g)
+   - `fat` (g)
+   - `fiber` (g)
+   - `vitamins`: List of top 3-4 vitamins/minerals (e.g., ["Vitamin C", "Potassium"]).
+
+8. **Context-Aware Recipes**
+   Suggest 3 recipes **based on the specific quality**.
+   - If fresh: Salads, raw usage.
+   - If overripe: Baking, smoothies, cooked dishes.
+   - Return a list of objects: `{"name": "...", "reason": "...", "time": "...", "difficulty": "Easy/Medium/Hard"}`.
+   - `reason` should explain why *this* recipe is good for *this* fruit's condition.
+
+---
+
+### Output Format:
+Respond with **strict JSON format only**.
+
+```json
+{
+  "name": "Banana",
+  "quality": 85,
+  "moisture": 70,
+  "size": "medium",
+  "insight": "The banana is bright yellow with a few small brown spots, indicating it is perfectly ripe and sweet.",
+  "shelf_life": {
+    "days": "2-3 days",
+    "stage": "Peak Fresh",
+    "storage_tips": "Store at room temperature. To slow down further ripening, you can refrigerate it, though the skin may darken."
+  },
+  "macros": {
+    "calories": 105,
+    "carbs": 27,
+    "protein": 1.3,
+    "fat": 0.3,
+    "fiber": 3.1,
+    "vitamins": ["Vitamin B6", "Vitamin C", "Potassium"]
+  },
+  "recipes": [
+    {
+      "name": "Classic Fruit Salad",
+      "reason": "The banana is at peak firmness, making it perfect for slicing without getting mushy.",
+      "time": "10 mins",
+      "difficulty": "Easy"
+    },
+    ... (total 3)
+  ],
+  "price": "...",
+  "quantity": "..."
+}
+```
+
+If the image is not a fruit/veg, return `{"error": "..."}`.
+"""
 
         completion = client.chat.completions.create(
             model="meta-llama/llama-4-scout-17b-16e-instruct",
@@ -55,8 +135,7 @@ async def analyze_image(image_data, force_refresh=False):
         # Fetch price information if it's a fruit or vegetable
         if "name" in analysis_result and analysis_result["name"] not in ["not a fruit or vegetable", "unknown"]:
             price_info = await get_product_price(analysis_result["name"], force_refresh)
-            analysis_result["price"] = price_info["price"]
-            analysis_result["quantity"] = price_info["quantity"]
+            analysis_result.update(price_info)
         
         return analysis_result
         
