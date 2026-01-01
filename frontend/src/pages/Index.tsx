@@ -20,6 +20,11 @@ interface AnalysisResult {
   quantity?: string;
 }
 
+import { motion } from "framer-motion";
+import BackgroundElements from "@/components/BackgroundElements";
+
+// ... existing imports
+
 const Index = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
@@ -90,18 +95,23 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-muted/30">
+    <div className="min-h-screen flex flex-col relative">
+      <BackgroundElements />
       <Header />
 
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative py-16 md:py-28 overflow-hidden">
-          <div className="circle-blur bg-primary/30 top-0 left-1/4 transform -translate-x-1/2"></div>
-          <div className="circle-blur bg-secondary/30 bottom-0 right-1/4 transform translate-x-1/2"></div>
+          {/* Removed old static circle-blurs in favor of BackgroundElements */}
 
           <div className="container px-4 mx-auto relative z-10">
             <div className="flex flex-col md:flex-row items-center md:space-x-12">
-              <div className="text-left max-w-xl mb-12 md:mb-0 md:w-1/2">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-left max-w-xl mb-12 md:mb-0 md:w-1/2"
+              >
                 <div className="inline-flex items-center justify-center px-3 py-1 mb-4 rounded-full bg-primary/10 text-primary text-sm font-medium">
                   <Sparkles className="mr-1 h-4 w-4" />
                   <span>AI-Powered Produce Analysis</span>
@@ -121,7 +131,7 @@ const Index = () => {
                   </Button>
 
                 </div>
-              </div>
+              </motion.div>
 
               <div className="md:w-1/2">
                 <div className="relative">
@@ -239,7 +249,7 @@ const Index = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
               {/* Card 1: Quality Analysis */}
-              <div className="bg-white p-6 rounded-3xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center text-center h-full">
+              <motion.div whileHover={{ y: -8 }} className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center h-full transition-shadow duration-300">
                 <div className="w-16 h-16 rounded-full bg-green-100/50 flex items-center justify-center mb-4">
                   <Sparkles className="h-8 w-8 text-green-600" />
                 </div>
@@ -247,10 +257,10 @@ const Index = () => {
                 <p className="text-sm text-gray-500 leading-relaxed">
                   AI-powered scoring & visual insights
                 </p>
-              </div>
+              </motion.div>
 
               {/* Card 2: Fair Price Meter */}
-              <div className="bg-white p-6 rounded-3xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center text-center h-full">
+              <motion.div whileHover={{ y: -8 }} className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center h-full transition-shadow duration-300">
                 <div className="w-16 h-16 rounded-full bg-cyan-100/50 flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-cyan-600">
                     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
@@ -261,10 +271,10 @@ const Index = () => {
                 <p className="text-sm text-gray-500 leading-relaxed">
                   Real-time market price comparison
                 </p>
-              </div>
+              </motion.div>
 
               {/* Card 3: Eat Me When */}
-              <div className="bg-white p-6 rounded-3xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center text-center h-full">
+              <motion.div whileHover={{ y: -8 }} className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center h-full transition-shadow duration-300">
                 <div className="w-16 h-16 rounded-full bg-orange-100/50 flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-orange-500">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -275,10 +285,10 @@ const Index = () => {
                 <p className="text-sm text-gray-500 leading-relaxed">
                   Smart shelf-life predictions
                 </p>
-              </div>
+              </motion.div>
 
               {/* Card 4: Smart Recipes */}
-              <div className="bg-white p-6 rounded-3xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center text-center h-full">
+              <motion.div whileHover={{ y: -8 }} className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center h-full transition-shadow duration-300">
                 <div className="w-16 h-16 rounded-full bg-red-100/50 flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-red-500">
                     <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"></path>
@@ -289,10 +299,10 @@ const Index = () => {
                 <p className="text-sm text-gray-500 leading-relaxed">
                   Context-aware recipe suggestions
                 </p>
-              </div>
+              </motion.div>
 
               {/* Card 5: Macro Scanner */}
-              <div className="bg-white p-6 rounded-3xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center text-center h-full">
+              <motion.div whileHover={{ y: -8 }} className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center h-full transition-shadow duration-300">
                 <div className="w-16 h-16 rounded-full bg-green-100/50 flex items-center justify-center mb-4">
                   <Apple className="h-8 w-8 text-green-600" />
                 </div>
@@ -300,7 +310,7 @@ const Index = () => {
                 <p className="text-sm text-gray-500 leading-relaxed">
                   Detailed nutritional breakdown
                 </p>
-              </div>
+              </motion.div>
             </div>
           </div>
         </section>
